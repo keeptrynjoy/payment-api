@@ -23,6 +23,9 @@ public class CouponIssue {
     @Enumerated(EnumType.STRING)
     private CouponIssueStatus useStatus;
 
+    private String changeReason;
+    private LocalDateTime changeDate;
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
     private Member member;
@@ -31,6 +34,7 @@ public class CouponIssue {
     @JoinColumn(name = "coupon_id")
     private Coupon coupon;
 
-    @OneToMany(mappedBy = "couponIssue")
-    private List<UsedCoupon> usedCoupons;
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "order_id")
+    private Order order;
 }
