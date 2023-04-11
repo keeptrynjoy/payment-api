@@ -1,9 +1,6 @@
 package toy.paymentapi.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import toy.paymentapi.support.error.ErrorCode;
 import toy.paymentapi.support.error.PaymentApiException;
 
@@ -18,6 +15,7 @@ import java.util.stream.Stream;
 @Getter
 @Table(name = "item_tb")
 @NoArgsConstructor
+@AllArgsConstructor
 public class Item {
 
     @Id @GeneratedValue
