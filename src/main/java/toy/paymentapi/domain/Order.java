@@ -6,6 +6,7 @@ import toy.paymentapi.domain.Enum.OrderStatus;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static javax.persistence.FetchType.*;
@@ -33,8 +34,51 @@ public class Order {
     private List<OrderItem> orderItems = new ArrayList<>();
 
     @OneToMany(mappedBy = "order")
-    private List<Payment> payment = new ArrayList<>();
+    private List<Payment> payments = new ArrayList<>();
 
     @OneToMany(mappedBy = "order")
-    private List<UsedCoupon> usedCoupons = new ArrayList<>();
+    private List<CouponIssue> couponIssues = new ArrayList<>();
+
+    public void writeStatus(OrderStatus status){
+        this.status = status;
+    }
+
+    public void writeOrderDate(LocalDateTime orderDate){
+        this.orderDate = orderDate;
+    }
+
+    //== 연관 관계 메서드 ==//
+    public void ownerMember(Member member){
+        this.member = member;
+        member.getOrders().add(this);
+    }
+
+    public void addOrderItem(OrderItem orderItem){
+        orderItems.add(orderItem);
+        orderItem.setOrder(this);
+    }
+
+    public void calculateDiscount(CouponIssue useCoupon, int usePoint){
+        int couponDiscount = useCoupon.getCoupon().getDiscountAmount();
+        this.totalDiscount = couponDiscount+usePoint;
+    }
+
+
+    //== 생성 메서드 ==//
+    public Order createOrder(Member member, CouponIssue useCoupon,int usePoint ,OrderItem... orderItems){
+        Order order = new Order();
+        order.ownerMember(member);
+        //주문 상품들을 list 에 저장
+        Arrays.stream(orderItems).forEach(order::addOrderItem);
+
+        order.writeStatus(OrderStatus.ORDER);
+
+        order.writeOrderDate(LocalDateTime.now());
+        //주문 상품들의 상품 합계 금액을 합산
+        Arrays.stream(orderItems).forEach(i->order.totalAmount+= i.getTotalPrice());
+
+        order.calculateDiscount(useCoupon,usePoint);
+
+        return order;
+    }
 }
