@@ -77,11 +77,11 @@ public class Order {
     }
 
     //== 생성 메서드 ==//
-    public Order createOrder(Member member, CouponIssue useCoupon,int usePoint ,OrderItem... orderItems){
+    public static Order createOrder(Member member, CouponIssue useCoupon,int usePoint ,List<OrderItem> orderItems){
         Order order = new Order();
         order.ownerMember(member);
         //주문 상품들을 list 에 저장
-        Arrays.stream(orderItems).forEach(order::addOrderItem);
+        orderItems.forEach(order::addOrderItem);
 
         order.writeStatus(OrderStatus.ORDER);
 
