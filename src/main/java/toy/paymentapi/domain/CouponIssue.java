@@ -27,7 +27,7 @@ public class CouponIssue {
     private LocalDateTime changeDate;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @ManyToOne(fetch = LAZY)
