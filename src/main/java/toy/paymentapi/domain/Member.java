@@ -16,7 +16,7 @@ import java.util.List;
 public class Member {
     @Id
     @GeneratedValue
-    @Column(name = "user_id")
+    @Column(name = "member_id")
     private Long id;
     private String name;
     private String phone;
@@ -26,14 +26,20 @@ public class Member {
     private List<Order> orders = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")
-    private List<CouponIssue> couponIssue = new ArrayList<>();
+    private List<CouponIssue> couponIssues = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")
-    private List<PointHistory> pointHistories = new ArrayList<>();
+    private List<Point> points = new ArrayList<>();
 
     public Member(String name, String phone, String email) {
         this.name = name;
         this.phone = phone;
         this.email = email;
     }
+
+    public void savePoint(Point point){
+        points.add(point);
+        point.ownerMember(this);
+    }
+
 }
