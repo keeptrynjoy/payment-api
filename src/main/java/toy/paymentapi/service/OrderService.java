@@ -14,22 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderService {
 
-    private final ItemRepository itemRepository;
 
-
-    private List<OrderItem> createOrderItems(OrderItemDto... orderItemDtos) {
-
-        List<OrderItem> orderItems = new ArrayList<>();
-
-        for (OrderItemDto or : orderItemDtos) {
-            Item item = itemRepository.getReferenceById(or.getId());
-            OrderItem orderItem = OrderItem.createOrderItem(item, item.getPrice(), or.getCount());
-            orderItems.add(orderItem);
-        }
-
-        return orderItems;
-
-    }
 
 
 }
