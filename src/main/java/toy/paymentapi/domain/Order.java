@@ -27,7 +27,7 @@ public class Order {
     private OrderStatus status;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @OneToMany(mappedBy = "order")
@@ -38,6 +38,7 @@ public class Order {
 
     @OneToMany(mappedBy = "order")
     private List<CouponIssue> couponIssues = new ArrayList<>();
+
 
     public void writeStatus(OrderStatus status){
         this.status = status;
@@ -58,11 +59,22 @@ public class Order {
         orderItem.setOrder(this);
     }
 
+    /**
+    * 쿠폰 금액, 사용 포인트 합산
+    **/
     public void calculateDiscount(CouponIssue useCoupon, int usePoint){
         int couponDiscount = useCoupon.getCoupon().getDiscountAmount();
         this.totalDiscount = couponDiscount+usePoint;
     }
 
+    /**
+     * 전체 주문 가격 합산
+     * */
+    public void getTotalAmount(){
+        this.totalAmount = orderItems.stream()
+                .mapToInt(OrderItem::getTotalPrice)
+                .sum();
+    }
 
     //== 생성 메서드 ==//
     public Order createOrder(Member member, CouponIssue useCoupon,int usePoint ,OrderItem... orderItems){
@@ -75,10 +87,12 @@ public class Order {
 
         order.writeOrderDate(LocalDateTime.now());
         //주문 상품들의 상품 합계 금액을 합산
-        Arrays.stream(orderItems).forEach(i->order.totalAmount+= i.getTotalPrice());
+        order.getTotalAmount();
 
         order.calculateDiscount(useCoupon,usePoint);
 
         return order;
     }
+
+
 }
