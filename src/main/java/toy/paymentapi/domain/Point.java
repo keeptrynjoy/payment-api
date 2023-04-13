@@ -1,9 +1,6 @@
 package toy.paymentapi.domain;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import toy.paymentapi.domain.Enum.PointReason;
 
 import javax.persistence.*;
@@ -14,7 +11,7 @@ import java.util.Optional;
 @Entity
 @Getter
 @Table(name = "point_his_tb")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Point {
 
     @Id @GeneratedValue
@@ -37,7 +34,17 @@ public class Point {
         member.getPoints().add(this);
     }
 
-//    public Point(int afterPoint, int calculationPoint, int beforePoint, String reason, LocalDateTime writeDate, Long orderId) {
+    @Builder
+    public Point(int afterPoint, int calculationPoint, int beforePoint, PointReason reason, LocalDateTime writeDate, Long orderId) {
+        this.afterPoint = afterPoint;
+        this.calculationPoint = calculationPoint;
+        this.beforePoint = beforePoint;
+        this.reason = reason;
+        this.writeDate = writeDate;
+        this.orderId = orderId;
+    }
+
+    //    public Point(int afterPoint, int calculationPoint, int beforePoint, String reason, LocalDateTime writeDate, Long orderId) {
 //        this.afterPoint = afterPoint;
 //        this.calculationPoint = calculationPoint;
 //        this.beforePoint = beforePoint;
@@ -50,13 +57,14 @@ public class Point {
             int afterPoint, int usePoint, Long orderId,Member member)
     {
 
-        Point point = new Point();
-        point.afterPoint=afterPoint;
-        point.calculationPoint=usePoint;
-        point.beforePoint=afterPoint-usePoint;
-        point.reason=PointReason.ORDER;
-        point.writeDate=LocalDateTime.now();
-        point.orderId=orderId;
+        Point point = Point.builder()
+                .afterPoint(afterPoint)
+                .calculationPoint(usePoint)
+                .beforePoint(afterPoint-usePoint)
+                .reason(PointReason.ORDER)
+                .writeDate(LocalDateTime.now())
+                .orderId(orderId)
+                .build();
 
         point.ownerMember(member);
 

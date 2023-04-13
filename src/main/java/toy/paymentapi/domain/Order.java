@@ -1,12 +1,14 @@
 package toy.paymentapi.domain;
 
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import toy.paymentapi.domain.Enum.OrderStatus;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static javax.persistence.FetchType.*;
@@ -14,6 +16,7 @@ import static javax.persistence.FetchType.*;
 @Entity
 @Getter
 @Table(name = "order_tb")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Order {
 
     @Id @GeneratedValue
@@ -39,13 +42,13 @@ public class Order {
     @OneToMany(mappedBy = "order")
     private List<CouponIssue> couponIssues = new ArrayList<>();
 
-
-    public void writeStatus(OrderStatus status){
-        this.status = status;
-    }
-
-    public void writeOrderDate(LocalDateTime orderDate){
+    @Builder
+    public Order(LocalDateTime orderDate, int totalAmount, int totalDiscount, OrderStatus status, Member member) {
         this.orderDate = orderDate;
+        this.totalAmount = totalAmount;
+        this.totalDiscount = totalDiscount;
+        this.status = status;
+        this.member = member;
     }
 
     //== 연관 관계 메서드 ==//
@@ -59,6 +62,7 @@ public class Order {
         orderItem.setOrder(this);
     }
 
+    //== 비즈니스 로직 ==//
     /**
     * 쿠폰 금액, 사용 포인트 합산
     **/
@@ -78,14 +82,16 @@ public class Order {
 
     //== 생성 메서드 ==//
     public static Order createOrder(Member member, CouponIssue useCoupon,int usePoint ,List<OrderItem> orderItems){
-        Order order = new Order();
+        Order order = Order.builder()
+                        .status(OrderStatus.ORDER)
+                        .orderDate(LocalDateTime.now())
+                        .build();
+
         order.ownerMember(member);
+
         //주문 상품들을 list 에 저장
         orderItems.forEach(order::addOrderItem);
 
-        order.writeStatus(OrderStatus.ORDER);
-
-        order.writeOrderDate(LocalDateTime.now());
         //주문 상품들의 상품 합계 금액을 합산
         order.getTotalAmount();
 
