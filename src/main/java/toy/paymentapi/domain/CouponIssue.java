@@ -25,7 +25,8 @@ public class CouponIssue {
     @Enumerated(EnumType.STRING)
     private CouponIssueStatus useStatus;
 
-    private String changeReason;
+    @Enumerated(EnumType.STRING)
+    private CouponIssueReason changeReason;
     private LocalDateTime changeDate;
     private Long orderId;
 
@@ -38,7 +39,7 @@ public class CouponIssue {
     private Coupon coupon;
 
     @Builder
-    public CouponIssue(LocalDateTime issueDate, LocalDateTime expirationDate, CouponIssueStatus useStatus, String changeReason, LocalDateTime changeDate, Long orderId, Member member, Coupon coupon) {
+    public CouponIssue(LocalDateTime issueDate, LocalDateTime expirationDate, CouponIssueStatus useStatus, CouponIssueReason changeReason, LocalDateTime changeDate, Long orderId, Member member, Coupon coupon) {
         this.issueDate = issueDate;
         this.expirationDate = expirationDate;
         this.useStatus = useStatus;
@@ -72,5 +73,14 @@ public class CouponIssue {
     //== 조회 메서드 ==//
     public int getDiscountAmount(){
         return coupon.getDiscountAmount();
+    }
+
+    //== 수정 메서드 ==//
+    public void updateCouponIssue(CouponIssueStatus useStatus,CouponIssueReason changeReason){
+        CouponIssue.builder()
+                .useStatus(useStatus)
+                .changeReason(changeReason)
+                .changeDate(LocalDateTime.now())
+                .build();
     }
 }
