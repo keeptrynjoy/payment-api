@@ -11,7 +11,9 @@ import toy.paymentapi.repository.*;
 import toy.paymentapi.service.dto.OrderItemDto;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @SpringBootTest
@@ -33,6 +35,9 @@ class OrderServiceTest {
     @Autowired
     private QueryRepository queryRepository;
 
+    @Autowired
+    private CouponService couponService;
+
     @DisplayName("주문 저장")
     @Test
     void orderTest(){
@@ -46,8 +51,11 @@ class OrderServiceTest {
         Item saveItem2 = itemRepository.save(item2);
         Item saveItem3 = itemRepository.save(item3);
 
-        //when
+        List<OrderItemDto> orderItemDtoList = new ArrayList<>();
 
+
+        //when
+        order(member.getId(),null,1000,orderItemDtoList);
 
         //then
 
@@ -55,16 +63,31 @@ class OrderServiceTest {
 
     private void order(Long memberId, CouponIssue couponIssue, int usePoint, List<OrderItemDto> orderItemDtoList){
 
+        //1. 회원 조회
         Member member = memberRepository.findById(memberId).get();
-        Integer afterPoint = queryRepository.findPointByMember(member.getId());
 
+        //2. 주문 생성
         List<OrderItem> orderItems = orderItemService.createOrderItems(orderItemDtoList);
+        Order createOrder = Order.createOrder(member, couponIssue, usePoint, orderItems);
 
-        Order resOrder = Order.createOrder(member, couponIssue, usePoint, orderItems);
-
-        Point pointByOrder = Point.createPointByOrder(afterPoint, usePoint, resOrder.getId(), member);
-
+        //3. 기존 포인트 조회 및 사용한 포인트 내역 추가
+        Integer afterPoint = queryRepository.findPointByMember(member.getId());
+        Point pointByOrder = Point.createPointByOrder(afterPoint, usePoint, createOrder.getId(), member);
         pointRepository.save(pointByOrder);
+
+        //4. 쿠폰 사용 여부 확인 및 사용 처리
+        if(Optional.ofNullable(couponIssue).isPresent()){
+            boolean changeToCouponStatus = couponService.changeToUsedCoupon(memberId, couponIssue.getId());
+
+            if(changeToCouponStatus == false){
+                throw new RuntimeException("쿠폰이 이미 사용한 상태입니다.");
+            }
+        }
+
+        //5. 결제 요청(PG)
+
+
+        //6. 결제 처리(DB)
 
     }
 
