@@ -21,7 +21,7 @@ class ItemRepositoryTest {
     @Autowired
     private ItemRepository itemRepository;
     @Autowired
-    private ItemQueryRepository itemQueryRepository;
+    private QueryRepository queryRepository;
 
     @DisplayName("상품 등록")
     @Test
@@ -45,7 +45,7 @@ class ItemRepositoryTest {
         Item saveItem = itemRepository.save(item);
 
         //when&then
-        Item findItem = itemQueryRepository.checkStockQuantity(saveItem.getId(), 9);
+        Item findItem = queryRepository.checkStockQuantity(saveItem.getId(), 9);
         assertThat(findItem).isEqualTo(saveItem);
     }
 
@@ -57,7 +57,7 @@ class ItemRepositoryTest {
         Item saveItem = itemRepository.save(item);
 
         //when
-        Item findItem = itemQueryRepository.checkStockQuantity(saveItem.getId(), 20);
+        Item findItem = queryRepository.checkStockQuantity(saveItem.getId(), 20);
 
         //&then
         assertThatThrownBy(()->findItem.getId())
@@ -65,6 +65,7 @@ class ItemRepositoryTest {
                 .extracting("errorCode")
                 .isEqualTo(ErrorCode.NOT_ENOUGH_STOCK_QUANTITY);
     }
+
 
     private static Item getItem() {
         return new Item("사과", 1000, LocalDateTime.now(), 10);

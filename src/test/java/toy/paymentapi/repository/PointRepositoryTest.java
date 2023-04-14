@@ -9,14 +9,12 @@ import org.springframework.transaction.annotation.Transactional;
 import toy.paymentapi.domain.Member;
 import toy.paymentapi.domain.Point;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @Slf4j
 @SpringBootTest
-class PointQueryRepositoryTest {
+class PointRepositoryTest {
 
     @Autowired
-    private PointQueryRepository pointQueryRepository;
+    private QueryRepository queryRepository;
     @Autowired
     private MemberRepository memberRepository;
 
@@ -35,7 +33,7 @@ class PointQueryRepositoryTest {
         Point save2 = pointRepository.save(pointByOrder2);
 
         //when
-        Integer pointByMember = pointQueryRepository.findPointByMember(saveMember.getId());
+        Integer pointByMember = queryRepository.findPointByMember(saveMember.getId());
         Point point = pointRepository.findById(save2.getId()).get();
 
         //then
@@ -44,5 +42,6 @@ class PointQueryRepositoryTest {
         log.info(String.valueOf(point.getWriteDate()));
         Assertions.assertThat(pointByMember).isEqualTo(90);
     }
+
 
 }

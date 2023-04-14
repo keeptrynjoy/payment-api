@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import toy.paymentapi.domain.*;
-import toy.paymentapi.repository.ItemRepository;
-import toy.paymentapi.repository.MemberRepository;
-import toy.paymentapi.repository.PointQueryRepository;
-import toy.paymentapi.repository.PointRepository;
+import toy.paymentapi.repository.*;
 import toy.paymentapi.service.dto.OrderItemDto;
 
 import java.time.LocalDateTime;
@@ -34,7 +31,7 @@ class OrderServiceTest {
     private PointRepository pointRepository;
 
     @Autowired
-    private PointQueryRepository pointQueryRepository;
+    private QueryRepository queryRepository;
 
     @DisplayName("주문 저장")
     @Test
@@ -59,7 +56,7 @@ class OrderServiceTest {
     private void order(Long memberId, CouponIssue couponIssue, int usePoint, List<OrderItemDto> orderItemDtoList){
 
         Member member = memberRepository.findById(memberId).get();
-        Integer afterPoint = pointQueryRepository.findPointByMember(member.getId());
+        Integer afterPoint = queryRepository.findPointByMember(member.getId());
 
         List<OrderItem> orderItems = orderItemService.createOrderItems(orderItemDtoList);
 
@@ -68,8 +65,6 @@ class OrderServiceTest {
         Point pointByOrder = Point.createPointByOrder(afterPoint, usePoint, resOrder.getId(), member);
 
         pointRepository.save(pointByOrder);
-
-
 
     }
 
