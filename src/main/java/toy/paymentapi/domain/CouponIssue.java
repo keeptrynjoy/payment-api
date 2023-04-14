@@ -25,6 +25,7 @@ public class CouponIssue {
 
     private String changeReason;
     private LocalDateTime changeDate;
+    private Long orderId;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
@@ -34,7 +35,6 @@ public class CouponIssue {
     @JoinColumn(name = "coupon_id")
     private Coupon coupon;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "order_id")
-    private Order order;
+
+
 }

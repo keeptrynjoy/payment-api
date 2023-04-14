@@ -39,9 +39,6 @@ public class Order {
     @OneToMany(mappedBy = "order")
     private List<Payment> payments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "order")
-    private List<CouponIssue> couponIssues = new ArrayList<>();
-
     @Builder
     public Order(LocalDateTime orderDate, int totalAmount, int totalDiscount, OrderStatus status, Member member) {
         this.orderDate = orderDate;
