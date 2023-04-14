@@ -26,18 +26,28 @@ public class Item {
     private LocalDateTime registerDate;
     private int stockQuantity;
 
-    @OneToMany(mappedBy = "item")
-    private List<Coupon> coupons = new ArrayList<>();
 
     @OneToMany(mappedBy = "item")
     private List<OrderItem> orderItems = new ArrayList<>();
 
+    @Builder
     public Item(String name, int price, LocalDateTime registerDate, int stockQuantity) {
         this.name = name;
         this.price = price;
         this.registerDate = registerDate;
         this.stockQuantity = stockQuantity;
     }
+
+    //== 생성 메서드 ==//
+    public static Item createItem(String name, int price, LocalDateTime registerDate, int stockQuantity){
+        return Item.builder()
+                .name(name)
+                .price(price)
+                .registerDate(registerDate)
+                .stockQuantity(stockQuantity)
+                .build();
+    }
+
 
     //== 비즈니스 로직 ==//
     /**
@@ -61,4 +71,5 @@ public class Item {
 
         this.stockQuantity = restStock;
     }
+
 }
