@@ -1,8 +1,6 @@
 package toy.paymentapi.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -11,8 +9,7 @@ import java.util.List;
 @Entity
 @Getter
 @Table(name = "member_tb")
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
     @Id
     @GeneratedValue
@@ -31,6 +28,7 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<Point> points = new ArrayList<>();
 
+    @Builder
     public Member(String name, String phone, String email) {
         this.name = name;
         this.phone = phone;
@@ -42,4 +40,13 @@ public class Member {
         point.ownerMember(this);
     }
 
+
+    //== 생성 메서드 ==//
+    public static Member createMember(String name,String phone, String email){
+        return Member.builder()
+                .name(name)
+                .phone(phone)
+                .email(email)
+                .build();
+    }
 }
