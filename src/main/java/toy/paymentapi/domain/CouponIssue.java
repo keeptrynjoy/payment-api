@@ -1,6 +1,6 @@
 package toy.paymentapi.domain;
 
-import lombok.Getter;
+import lombok.*;
 import toy.paymentapi.domain.Enum.CouponIssueStatus;
 
 import javax.persistence.*;
@@ -12,6 +12,8 @@ import static javax.persistence.FetchType.*;
 @Entity
 @Getter
 @Table(name = "coupon_issue")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
 public class CouponIssue {
 
     @Id @GeneratedValue
@@ -35,6 +37,40 @@ public class CouponIssue {
     @JoinColumn(name = "coupon_id")
     private Coupon coupon;
 
+    @Builder
+    public CouponIssue(LocalDateTime issueDate, LocalDateTime expirationDate, CouponIssueStatus useStatus, String changeReason, LocalDateTime changeDate, Long orderId, Member member, Coupon coupon) {
+        this.issueDate = issueDate;
+        this.expirationDate = expirationDate;
+        this.useStatus = useStatus;
+        this.changeReason = changeReason;
+        this.changeDate = changeDate;
+        this.orderId = orderId;
+        this.member = member;
+        this.coupon = coupon;
+    }
+
+    //== 연관관계 편의 메서드 ==//
+    public void saveCoupon(Coupon coupon){
+        this.coupon = coupon;
+    }
 
 
+    //== 생성 메서드 ==//
+    /**
+    * 쿠폰 발급(회원)
+    **/
+    public static CouponIssue couponIssuedToMember(LocalDateTime expirationDate, Member member, Coupon coupon){
+        return CouponIssue.builder()
+                .issueDate(LocalDateTime.now())
+                .expirationDate(expirationDate)
+                .useStatus(CouponIssueStatus.ON)
+                .member(member)
+                .coupon(coupon)
+                .build();
+    }
+
+    //== 조회 메서드 ==//
+    public int getDiscountAmount(){
+        return coupon.getDiscountAmount();
+    }
 }
