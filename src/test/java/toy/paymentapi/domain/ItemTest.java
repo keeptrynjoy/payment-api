@@ -7,13 +7,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import toy.paymentapi.repository.ItemRepository;
+import toy.paymentapi.order.domain.Item;
+import toy.paymentapi.order.repository.ItemRepository;
 import toy.paymentapi.support.error.ErrorCode;
 import toy.paymentapi.support.error.PaymentApiException;
 
 import java.time.LocalDateTime;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @SpringBootTest

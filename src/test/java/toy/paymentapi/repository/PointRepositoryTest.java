@@ -6,15 +6,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import toy.paymentapi.domain.Member;
-import toy.paymentapi.domain.Point;
+import toy.paymentapi.order.repository.MemberRepository;
+import toy.paymentapi.order.repository.PointRepository;
+import toy.paymentapi.order.repository.OrderQueryRepository;
+import toy.paymentapi.payment.domain.Member;
+import toy.paymentapi.order.domain.Point;
 
 @Slf4j
 @SpringBootTest
 class PointRepositoryTest {
 
     @Autowired
-    private QueryRepository queryRepository;
+    private OrderQueryRepository orderQueryRepository;
     @Autowired
     private MemberRepository memberRepository;
 
@@ -33,7 +36,7 @@ class PointRepositoryTest {
         Point save2 = pointRepository.save(pointByOrder2);
 
         //when
-        Integer pointByMember = queryRepository.findPointByMember(saveMember.getId());
+        Integer pointByMember = orderQueryRepository.findPointByMember(saveMember.getId());
         Point point = pointRepository.findById(save2.getId()).get();
 
         //then

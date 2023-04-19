@@ -7,20 +7,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import toy.paymentapi.domain.Coupon;
-import toy.paymentapi.domain.CouponIssue;
-import toy.paymentapi.domain.Enum.CouponType;
-import toy.paymentapi.domain.Item;
-import toy.paymentapi.domain.Member;
-import toy.paymentapi.repository.CouponIssueRepository;
-import toy.paymentapi.repository.CouponRepository;
-import toy.paymentapi.repository.ItemRepository;
-import toy.paymentapi.repository.MemberRepository;
+import toy.paymentapi.order.service.CouponService;
+import toy.paymentapi.order.domain.Coupon;
+import toy.paymentapi.order.domain.CouponIssue;
+import toy.paymentapi.order.domain.CouponType;
+import toy.paymentapi.order.domain.Item;
+import toy.paymentapi.payment.domain.Member;
+import toy.paymentapi.order.repository.CouponIssueRepository;
+import toy.paymentapi.order.repository.CouponRepository;
+import toy.paymentapi.order.repository.ItemRepository;
+import toy.paymentapi.order.repository.MemberRepository;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @SpringBootTest

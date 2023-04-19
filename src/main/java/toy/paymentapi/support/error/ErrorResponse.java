@@ -11,6 +11,7 @@ import java.util.List;
 public class ErrorResponse {
     private final HttpStatus status;
     private final String message;
+
     private final List<String> errors;
 
     public ErrorResponse(HttpStatus status, String message, String error) {

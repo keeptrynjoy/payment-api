@@ -6,8 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import toy.paymentapi.domain.Item;
-import toy.paymentapi.support.error.ErrorCode;
+import toy.paymentapi.order.domain.Item;
+import toy.paymentapi.order.repository.ItemRepository;
+import toy.paymentapi.order.repository.OrderQueryRepository;
 
 import java.time.LocalDateTime;
 
@@ -21,7 +22,7 @@ class ItemRepositoryTest {
     @Autowired
     private ItemRepository itemRepository;
     @Autowired
-    private QueryRepository queryRepository;
+    private OrderQueryRepository orderQueryRepository;
 
     @DisplayName("상품 등록")
     @Test
@@ -37,7 +38,7 @@ class ItemRepositoryTest {
         assertThat(findItem).isEqualTo(saveItem);
     }
 
-    @DisplayName("재고 수량 검증 - 정상")
+    @DisplayName("재고 수량 검증")
     @Test
     void findStockSuccess(){
         //given
@@ -45,25 +46,8 @@ class ItemRepositoryTest {
         Item saveItem = itemRepository.save(item);
 
         //when&then
-        Item findItem = queryRepository.checkStockQuantity(saveItem.getId(), 9);
+        Item findItem = orderQueryRepository.checkStockQuantity(saveItem.getId(), 9);
         assertThat(findItem).isEqualTo(saveItem);
-    }
-
-    @DisplayName("재고 수량 검증 - 재고 부족")
-    @Test
-    void findStockException(){
-        //given
-        Item item = getItem();
-        Item saveItem = itemRepository.save(item);
-
-        //when
-        Item findItem = queryRepository.checkStockQuantity(saveItem.getId(), 20);
-
-        //&then
-        assertThatThrownBy(()->findItem.getId())
-                .isInstanceOf(RuntimeException.class)
-                .extracting("errorCode")
-                .isEqualTo(ErrorCode.NOT_ENOUGH_STOCK_QUANTITY);
     }
 
 

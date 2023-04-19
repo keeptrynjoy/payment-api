@@ -1,16 +1,16 @@
 package toy.paymentapi.domain;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import toy.paymentapi.repository.MemberRepository;
-import toy.paymentapi.repository.PointRepository;
+import toy.paymentapi.order.domain.Point;
+import toy.paymentapi.payment.domain.Member;
+import toy.paymentapi.order.repository.MemberRepository;
+import toy.paymentapi.order.repository.PointRepository;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @SpringBootTest
