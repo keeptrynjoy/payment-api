@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import toy.paymentapi.payment.domain.Member;
 import toy.paymentapi.payment.domain.Payment;
 
 import javax.persistence.*;
@@ -57,7 +56,7 @@ public class Order {
 
     public void addOrderItem(OrderItem orderItem){
         orderItems.add(orderItem);
-        orderItem.setOrder(this);
+        orderItem.addOrder(this);
     }
 
     //== 비즈니스 로직 ==//
@@ -79,6 +78,7 @@ public class Order {
 
     //== 생성 메서드 ==//
     public static Order createOrder(Member member,Integer couponDiscount,Integer usePoint ,List<OrderItem> orderItems){
+
         Order order = Order.builder()
                         .status(OrderStatus.ORDER)
                         .orderDate(LocalDateTime.now())
@@ -96,6 +96,8 @@ public class Order {
 
         return order;
     }
+
+
 
 
 }

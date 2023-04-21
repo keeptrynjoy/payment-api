@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import toy.paymentapi.order.domain.Point;
-import toy.paymentapi.payment.domain.Member;
+import toy.paymentapi.order.domain.Member;
 import toy.paymentapi.order.repository.MemberRepository;
 import toy.paymentapi.order.repository.PointRepository;
 

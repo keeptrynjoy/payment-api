@@ -4,14 +4,14 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
 import toy.paymentapi.order.domain.CouponIssue;
 import toy.paymentapi.order.domain.Item;
-import toy.paymentapi.order.domain.QItem;
+import toy.paymentapi.order.domain.OrderItem;
 
 import javax.persistence.EntityManager;
 
 import static toy.paymentapi.order.domain.QCouponIssue.couponIssue;
 import static toy.paymentapi.order.domain.QItem.*;
+import static toy.paymentapi.order.domain.QMember.member;
 import static toy.paymentapi.order.domain.QPoint.point;
-import static toy.paymentapi.payment.domain.QMember.member;
 
 
 @Repository
@@ -61,4 +61,7 @@ public class OrderQueryRepository {
                 , couponIssue.id.eq(couponIssueId))
                 .fetchOne();
     }
+
+
+
 }

@@ -1,9 +1,6 @@
-package toy.paymentapi.payment.domain;
+package toy.paymentapi.order.domain;
 
 import lombok.*;
-import toy.paymentapi.order.domain.CouponIssue;
-import toy.paymentapi.order.domain.Order;
-import toy.paymentapi.order.domain.Point;
 
 import javax.persistence.*;
 import java.util.ArrayList;
