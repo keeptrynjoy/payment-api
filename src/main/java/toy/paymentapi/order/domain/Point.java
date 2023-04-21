@@ -1,19 +1,18 @@
 package toy.paymentapi.order.domain;
 
 import lombok.*;
-import toy.paymentapi.payment.domain.Member;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Table(name = "point_his_tb")
+@Table(name = "point_tb")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Point {
 
     @Id @GeneratedValue
-    @Column(name = "point_his_id")
+    @Column(name = "point_id")
     private Long id;
     private int afterPoint;
     private int calculationPoint;
@@ -42,14 +41,6 @@ public class Point {
         this.orderId = orderId;
     }
 
-    //    public Point(int afterPoint, int calculationPoint, int beforePoint, String reason, LocalDateTime writeDate, Long orderId) {
-//        this.afterPoint = afterPoint;
-//        this.calculationPoint = calculationPoint;
-//        this.beforePoint = beforePoint;
-//        this.reason = reason;
-//        this.writeDate = writeDate;
-//        this.OrderId = orderId;
-//    }
 
     public static Point createPointByOrder(
             int afterPoint, int usePoint, Long orderId,Member member)
@@ -73,7 +64,8 @@ public class Point {
     {
 
         Point point = Point.builder()
-                .afterPoint(1000)
+                .afterPoint(0)
+                .beforePoint(1000)
                 .reason(PointReason.WELCOME)
                 .writeDate(LocalDateTime.now())
                 .build();
