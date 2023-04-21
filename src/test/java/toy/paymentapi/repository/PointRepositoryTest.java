@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import toy.paymentapi.order.repository.MemberRepository;
 import toy.paymentapi.order.repository.PointRepository;
 import toy.paymentapi.order.repository.OrderQueryRepository;
-import toy.paymentapi.payment.domain.Member;
+import toy.paymentapi.order.domain.Member;
 import toy.paymentapi.order.domain.Point;
 
 @Slf4j
@@ -40,9 +40,6 @@ class PointRepositoryTest {
         Point point = pointRepository.findById(save2.getId()).get();
 
         //then
-        log.info(String.valueOf(save1.getBeforePoint()));
-        log.info(String.valueOf(save2.getBeforePoint()));
-        log.info(String.valueOf(point.getWriteDate()));
         Assertions.assertThat(pointByMember).isEqualTo(90);
     }
 
