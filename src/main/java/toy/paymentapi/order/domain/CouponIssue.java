@@ -1,7 +1,6 @@
 package toy.paymentapi.order.domain;
 
 import lombok.*;
-import toy.paymentapi.payment.domain.Member;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

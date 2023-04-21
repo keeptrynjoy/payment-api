@@ -12,7 +12,7 @@ import toy.paymentapi.order.domain.Coupon;
 import toy.paymentapi.order.domain.CouponIssue;
 import toy.paymentapi.order.domain.CouponType;
 import toy.paymentapi.order.domain.Item;
-import toy.paymentapi.payment.domain.Member;
+import toy.paymentapi.order.domain.Member;
 import toy.paymentapi.order.repository.CouponIssueRepository;
 import toy.paymentapi.order.repository.CouponRepository;
 import toy.paymentapi.order.repository.ItemRepository;
