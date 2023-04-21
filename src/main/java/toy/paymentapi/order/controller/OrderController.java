@@ -17,7 +17,7 @@ import toy.paymentapi.order.service.dto.RegisteredOrderDto;
 @Slf4j
 public class OrderController {
 
-    private OrderService orderService;
+    private final OrderService orderService;
 
     @PostMapping("register")
     public ResponseEntity<OrderRegisteredResponse> registerOrder(OrderResisterRequest request){
