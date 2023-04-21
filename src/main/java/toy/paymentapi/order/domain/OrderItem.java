@@ -1,5 +1,6 @@
 package toy.paymentapi.order.domain;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -27,13 +28,15 @@ public class OrderItem {
     @JoinColumn(name = "order_id")
     private Order order;
 
+    @Builder
     public OrderItem(Item item, int orderPrice, int count) {
         this.orderPrice = orderPrice;
         this.count = count;
         this.item = item;
     }
 
-    public void setOrder(Order order){
+
+    public void addOrder(Order order){
         this.order = order;
     }
 
@@ -57,4 +60,11 @@ public class OrderItem {
     public int getTotalPrice(){
         return getOrderPrice() * getCount();
     }
+
+
+    //== 조회 로직 ==//
+    public int getStockQuantity(){
+        return item.getStockQuantity();
+    }
+
 }
