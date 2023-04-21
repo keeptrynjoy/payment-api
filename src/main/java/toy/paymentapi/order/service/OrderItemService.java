@@ -23,7 +23,6 @@ public class OrderItemService {
      * 재고 검증 및 주문 상품 생성
      * OrderItemDto
      * - itemId : 상품 pk
-     * - price : 상품 가격
      * - count : 상품의 주문량
      **/
     @Transactional
@@ -38,11 +37,13 @@ public class OrderItemService {
 
        //재고 없을 경우
        } else if (item.getStockQuantity() == 0){
-           throw new PaymentApiException(ITEM_STOCK_EMPTY);
+           throw new PaymentApiException(STOCK_EMPTY);
 
        } else {
-           return OrderItem.createOrderItem(item, orderItemDto.getPrice(), orderItemDto.getCount());
+           return OrderItem.createOrderItem(item, item.getPrice(), orderItemDto.getCount());
 
        }
     }
+
+
 }
