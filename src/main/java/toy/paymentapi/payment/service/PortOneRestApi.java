@@ -7,7 +7,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum PortOneRestApi {
     HOST("https://api.iamport.kr"),
-    AUTHENTICATE("/users/getToken");
+    AUTHENTICATE("/users/getToken"),
+    ERRORTEST("");
+
 
     private final String uri;
 
