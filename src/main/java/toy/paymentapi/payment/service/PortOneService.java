@@ -36,8 +36,7 @@ public class PortOneService {
      *      -  access_token
     **/
     @Transactional(propagation = Propagation.MANDATORY)
-    public PortOneAccessDto getToken(){
-        RestTemplate restTemplate = new RestTemplate();
+    public PortOneAccessDto getToken(RestTemplate restTemplate){
 
         //Http Entity create
         HttpEntity<PortOneAccessDto> request = new HttpEntity<>(new PortOneAccessDto(key, secret));
@@ -61,10 +60,18 @@ public class PortOneService {
 
     @Transactional
     public void getPaymentInfo(){
-
-        PortOneAccessDto token = getToken();
-
         RestTemplate restTemplate = new RestTemplate();
+
+        //1. 토큰 발급
+        PortOneAccessDto token = getToken(restTemplate);
+
+        //2. GET 요청
+
+
+        //3. JSON Parser -> convert DTO
+
+
+        //4. 예외 처리
 
     }
 

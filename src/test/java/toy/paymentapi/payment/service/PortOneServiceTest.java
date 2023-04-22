@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.web.client.RestTemplate;
 import toy.paymentapi.payment.dto.PortOneAccessDto;
 
 @SpringBootTest
@@ -19,8 +20,10 @@ class PortOneServiceTest {
     @Test
     void getTokenTest(){
         //given
+        RestTemplate restTemplate = new RestTemplate();
+
         //when
-        PortOneAccessDto token = portOneService.getToken();
+        PortOneAccessDto token = portOneService.getToken(restTemplate);
 
         //then
         Assertions.assertThat(token.getAccess_token()).isNotEmpty();
