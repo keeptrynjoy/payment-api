@@ -9,5 +9,6 @@ public enum PortOneRestApi {
     HOST("https://api.iamport.kr"),
     AUTHENTICATE("/users/getToken");
 
-    private final String url;
+    private final String uri;
+
 }
