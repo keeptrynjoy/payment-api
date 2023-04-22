@@ -1,6 +1,7 @@
 package toy.paymentapi.payment.service;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import toy.paymentapi.payment.dto.PortOneAccessDto;
 
@@ -29,35 +31,6 @@ public class PortOneService {
     @Value("${imp_secret}")
     private String secret;
 
-    /**
-    * 토큰 발급 요청 처리
-     * return
-     * - PortOneAccessDto
-     *      -  access_token
-    **/
-    @Transactional(propagation = Propagation.MANDATORY)
-    public PortOneAccessDto getToken(RestTemplate restTemplate){
-
-        //Http Entity create
-        HttpEntity<PortOneAccessDto> request = new HttpEntity<>(new PortOneAccessDto(key, secret));
-
-        //POST REQUEST to PortOne API -> Response : JSON
-        ResponseEntity<String> response = restTemplate
-                .exchange(creatApiUrl(AUTHENTICATE), HttpMethod.POST, request, String.class);
-
-        if(!response.getStatusCode().isError()){
-            Gson gson = new Gson();
-
-            //JSON Parser -> convert String
-            String responseBody = gson.fromJson(response.getBody(), Map.class).get("response").toString();
-
-            //JSON Parser -> convert DTO
-            return gson.fromJson(responseBody, PortOneAccessDto.class);
-        }
-
-        throw new RuntimeException("An access token was not issued from Port One.");
-    }
-
     @Transactional
     public void getPaymentInfo(){
         RestTemplate restTemplate = new RestTemplate();
@@ -73,6 +46,50 @@ public class PortOneService {
 
         //4. 예외 처리
 
+    }
+
+    /**
+    * 토큰 발급 요청
+     * return
+     * - PortOneAccessDto
+     *   - String access_token
+    **/
+    @Transactional(propagation = Propagation.MANDATORY)
+    public PortOneAccessDto getToken(RestTemplate restTemplate){
+
+        //Http Entity create
+        HttpEntity<PortOneAccessDto> request = new HttpEntity<>(new PortOneAccessDto(key, secret));
+
+        ResponseEntity<String> response = null;
+
+        try {
+            //POST REQUEST to PortOne API -> Response : JSON
+             response = restTemplate
+                    .exchange(creatApiUrl(AUTHENTICATE), HttpMethod.POST, request, String.class);
+
+        } catch (HttpStatusCodeException ex){
+            throw new RuntimeException("Error Response "+ ex.getMessage());
+        }
+
+
+        if(!response.getStatusCode().isError()){
+            Gson gson = new Gson();
+            String responseBody ="";
+
+            try {
+                //JSON Parser -> convert String
+                 responseBody = gson.fromJson(response.getBody(), Map.class).get("response").toString();
+
+            } catch (JsonSyntaxException ex){
+                log.error(ex.getMessage());
+                throw new IllegalStateException("JSON Document has no Body");
+            }
+
+            //JSON Parser -> convert DTO
+            return gson.fromJson(responseBody, PortOneAccessDto.class);
+        }
+
+        throw new RuntimeException("An access token was not issued from Port One.");
     }
 
 
