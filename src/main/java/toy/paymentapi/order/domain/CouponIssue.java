@@ -11,7 +11,6 @@ import static javax.persistence.FetchType.*;
 @Getter
 @Table(name = "coupon_issue")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString
 public class CouponIssue {
 
     @Id @GeneratedValue
