@@ -1,6 +1,7 @@
 package toy.paymentapi.payment.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +11,6 @@ import toy.paymentapi.payment.dto.PortOneAccessDto;
 @SpringBootTest
 @Slf4j
 class PortOneServiceTest {
-
-
 
     @Autowired
     PortOneService portOneService;
@@ -24,5 +23,6 @@ class PortOneServiceTest {
         PortOneAccessDto token = portOneService.getToken();
 
         //then
+        Assertions.assertThat(token.getAccess_token()).isNotEmpty();
     }
 }
