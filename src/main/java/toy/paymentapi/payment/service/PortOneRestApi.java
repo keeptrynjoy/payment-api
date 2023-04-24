@@ -8,7 +8,9 @@ import lombok.Getter;
 public enum PortOneRestApi {
     HOST("https://api.iamport.kr"),
     AUTHENTICATE("/users/getToken"),
-    ERRORTEST("");
+    PAYMENTS_IMPUID("/payments"),
+
+    ERROR_TEST("");
 
 
     private final String uri;
