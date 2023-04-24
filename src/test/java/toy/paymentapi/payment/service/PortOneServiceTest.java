@@ -26,6 +26,8 @@ class PortOneServiceTest {
         PortOneAccessDto token = portOneService.getToken(restTemplate);
 
         //then
-        Assertions.assertThat(token.getAccess_token()).isNotEmpty();
+        String accessToken = token.getAccess_token();
+        log.info(accessToken);
+        Assertions.assertThat(accessToken).isNotEmpty();
     }
 }
