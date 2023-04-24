@@ -9,14 +9,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 import toy.paymentapi.payment.dto.PortOneAccessDto;
+import toy.paymentapi.payment.dto.PortOnePaymentDto;
 
+
+import java.util.Objects;
 
 import static toy.paymentapi.payment.service.PortOneRestApi.*;
 
@@ -32,21 +37,33 @@ public class PortOneService {
     @Value("${imp_secret}")
     private String secret;
 
-    @Transactional
-    public void getPaymentInfo(String impUid){
+    @Transactional(readOnly = true)
+    public PortOnePaymentDto getPaymentInfo(String impUid){
         RestTemplate restTemplate = new RestTemplate();
 
-        //1. 토큰 발급
+        //1. get access token
         PortOneAccessDto token = getToken(restTemplate);
 
-        //2. GET 요청
-        ResponseEntity<String> response = restTemplate.getForEntity(creatApiUrl(PAYMENTS_IMPUID) +"/"+ impUid, String.class);
+        ResponseEntity<String> response = null;
 
-        //3. JSON Parser -> convert DTO
-//        parsingResponseBody(response.getBody(),)
+        try {
+            //2. make request URL
+            StringBuilder sb = new StringBuilder();
+            sb.append("/");
+            sb.append(impUid);
+            sb.append("?_");
+            sb.append(token);
 
-        //4. 예외 처리
+            //3. GET payments
+            response = restTemplate
+                    .getForEntity(creatApiUrl(PAYMENTS_IMPUID,sb), String.class);
 
+        } catch (HttpClientErrorException ex){
+            throw new RuntimeException("Error Response "+ ex.getMessage());
+        }
+
+        //4. JSON Parser -> convert DTO
+        return parsingResponseBody(response, PortOnePaymentDto.class);
     }
 
     /**
@@ -60,13 +77,14 @@ public class PortOneService {
 
         //Http Entity create
         HttpEntity<PortOneAccessDto> request = new HttpEntity<>(new PortOneAccessDto(key, secret));
-
         ResponseEntity<String> response = null;
 
         try {
+            StringBuilder sb = new StringBuilder();
+
             //POST REQUEST to PortOne API -> Response : JSON
              response = restTemplate
-                    .exchange(creatApiUrl(AUTHENTICATE), HttpMethod.POST, request, String.class);
+                    .exchange(creatApiUrl(AUTHENTICATE,sb), HttpMethod.POST, request, String.class);
 
         } catch (HttpStatusCodeException ex){
             throw new RuntimeException("Error Response "+ ex.getMessage());
@@ -77,39 +95,42 @@ public class PortOneService {
 
     private <T> T parsingResponseBody(ResponseEntity<String> response, Class<T> returnClass){
 
-        if(!response.getStatusCode().isError()){
-            ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
+        //1. response status check
+        HttpStatus responseStatusCode = response.getStatusCode();
 
-            JsonNode responseBody = null;
-            try {
-                //JSON Parser -> convert String
-                JsonNode root = mapper.readTree(response.getBody());
-                responseBody = root.path("response");
-            } catch (JsonProcessingException ex){
-                log.error(ex.getMessage());
-                throw new IllegalStateException("JSON Document has no Body");
-            }
-
-            //JSON Parser -> convert DTO
-            return mapper.convertValue(responseBody, returnClass);
+        if(responseStatusCode.isError()){
+            throw new ResponseStatusException(response.getStatusCode()
+                    ,"received the error code from Port One");
         }
 
-        throw new ResponseStatusException(response.getStatusCode()
-                ,"received the error code from Port One");
+        //2. null check
+        String responseBody = Objects.requireNonNull(response.getBody(),"JSON Document has no body");
+
+        ObjectMapper mapper = new ObjectMapper()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
+
+        JsonNode resultJsonData = null;
+
+        try {
+            //3. JSON Parser -> convert String
+            JsonNode root = mapper.readTree(responseBody);
+            resultJsonData = root.path("response");
+
+        } catch (JsonProcessingException ex){
+            log.error(ex.getMessage());
+            throw new IllegalStateException("The target could not be found in the JSON document.");
+        }
+
+        //4. JSON Parser -> convert DTO
+        return mapper.convertValue(resultJsonData, returnClass);
     }
 
 
-    private String creatApiUrl(PortOneRestApi resource){
-
-        StringBuilder sb = new StringBuilder();
+    private String creatApiUrl(PortOneRestApi resource, StringBuilder sb){
 
         sb.append(HOST.getUri());
         sb.append(resource.getUri());
 
-        String getTokenUrl = sb.toString();
-
-        return getTokenUrl;
+        return sb.toString();
     }
-
-
 }
