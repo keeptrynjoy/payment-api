@@ -18,8 +18,9 @@ public class Payment {
     @Id @GeneratedValue
     @Column(name = "payment_id")
     private Long id;
+    private String impUid;
     private int amount;
-    private LocalDateTime LastChangeDate;
+    private LocalDateTime lastChangeDate;
 
     @Enumerated(EnumType.STRING)
     private PaymentType paymentType;
@@ -34,4 +35,10 @@ public class Payment {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
+
+
+    public void ownerOrder(Order order){
+        this.order = order;
+        order.getPayments().add(this);
+    }
 }
