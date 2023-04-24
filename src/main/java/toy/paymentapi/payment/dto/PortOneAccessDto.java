@@ -3,9 +3,11 @@ package toy.paymentapi.payment.dto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
 public class PortOneAccessDto {
     private String imp_key;
     private String imp_secret;
