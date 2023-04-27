@@ -30,6 +30,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web:2.7.10'
     implementation 'com.querydsl:querydsl-jpa'
+    implementation 'mysql:mysql-connector-java:8.0.32'
+    implementation 'com.google.code.gson:gson:2.10.1'
 
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
