@@ -1,6 +1,7 @@
 package toy.paymentapi.order.domain;
 
 import lombok.*;
+import toy.paymentapi.order.service.dto.ItemDto;
 import toy.paymentapi.support.error.ErrorCode;
 import toy.paymentapi.support.error.PaymentApiException;
 
@@ -14,7 +15,7 @@ import static toy.paymentapi.support.error.ErrorCode.*;
 @Entity
 @Getter
 @Table(name = "item_tb")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Item {
 
@@ -70,6 +71,23 @@ public class Item {
         }
 
         this.stockQuantity = restStock;
+    }
+
+    public ItemDto toItemDto(){
+        return ItemDto.builder()
+                .id(this.id)
+                .name(this.name)
+                .price(this.price)
+                .registerDate(this.registerDate)
+                .stockQuantity(this.stockQuantity)
+                .build();
+    }
+
+    public static Item fromItemDto(ItemDto itemDto){
+        return Item.createItem(itemDto.getName(),
+                itemDto.getPrice(),
+                LocalDateTime.now(),
+                itemDto.getStockQuantity());
     }
 
 }
