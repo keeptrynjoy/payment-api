@@ -90,4 +90,14 @@ public class Item {
                 itemDto.getStockQuantity());
     }
 
+    @Override
+    public String toString() {
+        return "Item{ "+
+                "id = " + id +
+                ", name = " + name +
+                ", price = " + price +
+                ", registerDate = " + registerDate +
+                ", stockQuantity = " + stockQuantity +
+                " }";
+    }
 }
