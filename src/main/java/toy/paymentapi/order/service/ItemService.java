@@ -24,7 +24,7 @@ public class ItemService {
     private final ItemRepository itemRepository;
 
     /**
-     * 상품 조회
+     * 상품 리스트 페이징 조회
      * parameter
      * - Integer pageNum : 조회 요청한 페이지 번호
      * - Integer itemSize : 한 페이지에 담을 상품 수
@@ -38,34 +38,43 @@ public class ItemService {
      *      - 마지막 페이지 번호
      **/
     @Transactional(readOnly = true)
-    public ItemPageableDto pagedItemSortByRegisteredAt(Integer pageNum, Integer itemSize){
+    public ItemPageableDto pagedItemSortByRegisteredAt(int pageNum, int itemSize) {
 
-        PageRequest pageRequest = PageRequest.of(pageNum,itemSize, Sort.by("registerDate"));
+        PageRequest pageRequest = PageRequest.of(pageNum, itemSize, Sort.by("registerDate"));
         Page<Item> itemPage = itemRepository.findAll(pageRequest);
+
+
+        int totalPage = itemPage.getTotalPages();
+        int lastPageNum = totalPage -1;
+        int totalItems = Math.toIntExact(itemPage.getTotalElements());
+
+        /*
+         * 1. 등록된 상품 유무 검증
+         * 2. 요청한 페이지 번호 검증
+         */
+        if(totalItems == 0){
+            throw ErrorCode.throwNoContentItem();
+
+        } else if(lastPageNum < pageNum){
+            throw ErrorCode.throwNotFoundPageNum();
+
+        }
 
 
         List<ItemDto> itemList;
         int currentPageNum;
 
-        if(itemPage.isFirst() && !itemPage.hasContent()){
-
-            throw ErrorCode.throwNoContentItem();
-
-        } else if (!itemPage.hasNext() && !itemPage.hasContent()){
-
+        // 마지막 페이지 요청시 아이템을 시 이전 페이지 데이터 반환
+        if (!itemPage.hasNext() && !itemPage.hasContent()) {
             Page<Item> previousPage = itemRepository.findAll(pageRequest.previousOrFirst());
-            itemList = previousPage.stream().map(Item::toItemDto).collect(Collectors.toList());
+            itemList = getCollect(previousPage);
             currentPageNum = previousPage.getNumber();
 
         } else {
-            itemList = itemPage.stream().map(Item::toItemDto).collect(Collectors.toList());
+            itemList = getCollect(itemPage);
             currentPageNum = itemPage.getNumber();
+
         }
-
-
-        Integer totalItems = Math.toIntExact(itemPage.getTotalElements());
-        Integer totalPage = itemPage.getTotalPages();
-        Integer lastPageNum = totalPage -1;
 
         return ItemPageableDto.builder()
                 .totalItems(totalItems)
@@ -74,6 +83,10 @@ public class ItemService {
                 .currentPageNum(currentPageNum)
                 .lastPageNum(lastPageNum)
                 .build();
+    }
+
+    private static List<ItemDto> getCollect(Page<Item> itemPage) {
+        return itemPage.stream().map(Item::toItemDto).collect(Collectors.toList());
     }
 
 
