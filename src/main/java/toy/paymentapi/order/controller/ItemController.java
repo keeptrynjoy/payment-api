@@ -6,13 +6,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import toy.paymentapi.order.controller.request.ItemRegisterRequest;
 import toy.paymentapi.order.controller.response.ItemInfoResponse;
-import toy.paymentapi.order.controller.response.ItemListResponse;
+import toy.paymentapi.order.controller.response.PagedItemsResponse;
 import toy.paymentapi.order.service.ItemService;
-import toy.paymentapi.order.service.dto.ItemDto;
+import toy.paymentapi.order.service.dto.ItemPageableDto;
 import toy.paymentapi.order.service.dto.RegisteredItemDto;
 
 import javax.validation.Valid;
-import java.util.List;
+import javax.validation.constraints.NotNull;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,14 +33,12 @@ public class ItemController {
         return ResponseEntity.ok(registeredItemDto.toResponse());
     }
 
+    @GetMapping("paged/{pageNum}/{itemSize}")
+    public ResponseEntity<PagedItemsResponse> pagedItems(@PathVariable("pageNum") @NotNull Integer pageNum,
+                                                         @PathVariable("itemSize") @NotNull Integer itemSize){
 
-    @GetMapping("list/{pageNum}/{itemSize}")
-    public ResponseEntity<ItemListResponse> itemList(@PathVariable("pageNum") Integer pageNum,
-                                                     @PathVariable("itemSize") Integer itemSize){
+        ItemPageableDto itemPageableDto = itemService.pagedItemSortByRegisteredAt(pageNum, itemSize);
 
-        List<ItemDto> itemDtos = itemService.getItemList(pageNum, itemSize);
-
-        return ResponseEntity.ok(new ItemListResponse(itemDtos));
+        return ResponseEntity.ok(new PagedItemsResponse(itemPageableDto));
     }
-
 }
