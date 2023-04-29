@@ -1,4 +1,4 @@
-package toy.paymentapi.service;
+package toy.paymentapi.payment.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;

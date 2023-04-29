@@ -1,4 +1,4 @@
-package toy.paymentapi.service;
+package toy.paymentapi.order.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
