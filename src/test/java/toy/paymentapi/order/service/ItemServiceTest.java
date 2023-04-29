@@ -73,7 +73,7 @@ class ItemServiceTest {
         Assertions.assertThatThrownBy(()-> itemService.pagedItemSortByRegisteredAt(pageNum, itemSize))
                 .isInstanceOf(PaymentApiException.class)
                 .extracting("errorCode")
-                .isEqualTo(ErrorCode.NO_CONTENT_ITEM);
+                .isEqualTo(ErrorCode.NOT_FOUND_ITEM);
     }
 
     @DisplayName("상품 페이징 테스트 - 없는 페이지 요청시 예외 발생")

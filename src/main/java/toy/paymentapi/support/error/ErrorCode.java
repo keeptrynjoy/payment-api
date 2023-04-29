@@ -15,15 +15,12 @@ public enum ErrorCode {
     STOCK_EMPTY(BAD_REQUEST,"주문한 상품의 보유 재고가 없습니다."),
     NOT_ENOUGH_POINT(BAD_REQUEST,"사용할 포인트가 부족합니다."),
     NOT_MATCH_AMOUNTS(BAD_REQUEST,"결제 금액 불일치"),
-
     NOT_FOUND_PAGE_NUM(BAD_REQUEST,"요청한 페이지 번호를 찾을 수 없습니다."),
+
 
     //== 404, Not Found ==//
     NOT_FOUND_ORDER(NOT_FOUND, "주문 내역 확인 불가"),
-
-
-    //== 204, No Content ==//
-    NO_CONTENT_ITEM(NO_CONTENT,"등록된 상품이 없습니다.");
+    NOT_FOUND_ITEM(NOT_FOUND,"현재 등록된 상품이 없습니다.");
 
 
     private final HttpStatus httpStatus;
@@ -49,7 +46,7 @@ public enum ErrorCode {
         throw new PaymentApiException(NOT_MATCH_AMOUNTS);
     }
 
-    public static PaymentApiException throwNoContentItem(){
-        throw new PaymentApiException(NO_CONTENT_ITEM);
+    public static PaymentApiException throwNotFoundItem(){
+        throw new PaymentApiException(NOT_FOUND_ITEM);
     }
 }
