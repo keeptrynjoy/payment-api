@@ -17,6 +17,7 @@ public enum ErrorCode {
     NOT_MATCH_AMOUNTS(BAD_REQUEST,"결제 금액 불일치"),
     NOT_FOUND_PAGE_NUM(BAD_REQUEST,"요청한 페이지 번호를 찾을 수 없습니다."),
 
+    EMPTY_REST_URI(BAD_REQUEST,"필수 URI가 입력되지 않았습니다."),
 
     //== 404, Not Found ==//
     NOT_FOUND_ORDER(NOT_FOUND, "주문 내역 확인 불가"),
@@ -48,5 +49,9 @@ public enum ErrorCode {
 
     public static PaymentApiException throwNotFoundItem(){
         throw new PaymentApiException(NOT_FOUND_ITEM);
+    }
+
+    public static PaymentApiException throwEmptyRestUri(){
+        throw new PaymentApiException(EMPTY_REST_URI);
     }
 }
